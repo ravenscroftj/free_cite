@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080625201905) do
+ActiveRecord::Schema.define(:version => 20080807202338) do
 
   create_table "citations", :force => true do |t|
     t.text    "raw_string"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20080625201905) do
     t.text    "note"
     t.string  "marker_type"
     t.string  "marker"
+    t.string  "rating"
   end
 
   create_table "sessions", :force => true do |t|
