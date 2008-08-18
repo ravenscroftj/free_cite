@@ -58,3 +58,5 @@ require 'array_helpers'
 # end
 
 # Include your application configuration below
+
+URL_ROOT = "http://huey.privatedisplay.net/"
