@@ -1,16 +1,36 @@
+role :app, "huey.privatedisplay.net"
 set :application, "FreeCite"
 set :repository,  "git@github.com:miriam/free_cite.git"
-set :branch, "master"
+set :branch, "huey_deploy"
+set :user, "www"
 
-# If you aren't deploying to /u/apps/#{application} on the target
-# servers (which is the default), you can specify the actual location
-# via the :deploy_to variable:
-# set :deploy_to, "/var/www/#{application}"
-
-# If you aren't using Subversion to manage your source code, specify
-# your SCM below:
+set :deploy_to, "/www/freecite"
+set :deploy_via, "remote_cache"
 set :scm, :git
+default_run_options[:pty] = true
 
-role :app, "your app-server here"
-role :web, "your web-server here"
-role :db,  "your db-server here", :primary => true
+
+namespace :deploy do
+  namespace :monit do
+    set :monit_group, "freecite"
+    [ :stop, :start, :restart ].each do |t|
+      desc "#{t.to_s.capitalize} mongrel using monit" 
+      task t, :roles => :app do
+        sudo "/usr/bin/monit #{t.to_s} -g #{monit_group} all" 
+      end
+    end
+  end
+  desc "restart mongrel using monit" 
+  task :restart, :roles => :app do
+    deploy.monit.restart
+  end
+  desc "start mongrel using monit" 
+  task :start, :roles => :app do
+    deploy.monit.start
+  end
+  desc "stop mongrel using monit" 
+  task :stop, :roles => :app do
+    deploy.monit.stop
+  end
+end
+
