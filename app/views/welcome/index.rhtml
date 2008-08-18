@@ -1,5 +1,5 @@
 <h1>About FreeCite</h1>
-<p>FreeCite is an open-source application that classifies document citations into fielded data. You can use
+<p>FreeCite is an open-source application that parses document citations into fielded data. You can use
     it as a web <a href="#parse_string">application</a>
     or a <%= link_to "service", :controller => "welcome", :action => "api_instructions" %>. You can also 
     <a href="http://github.com/miriam/free_cite/tree/master">download the source</a> and run FreeCite on your
@@ -11,20 +11,20 @@
 
 <h2>Where did FreeCite come from?</h2>
 
-<p>FreeCite was inspired by 
-    <a href="http://aye.comp.nus.edu.sg/parsCit/">ParsCit</a>. 
-    Much thanks to ParsCit's maintainer, Isaac Councill.</p>
-    
 <p>FreeCite was developed through a partnership between the 
     <a href="http://dl.lib.brown.edu/libweb/index.php">Brown 
     University Library</a> and Providence-based start-up 
     <a href="http://www.pubdisplay.com">Public Display</a>,
-    with funding from the <a href="http://www.mellon.org/">Mellon Foundation</a>.</p>
+    with funding from the <a href="http://www.mellon.org/">Mellon Foundation</a>.
+    FreeCite was inspired by 
+    <a href="http://aye.comp.nus.edu.sg/parsCit/">ParsCit</a>. 
+    Much thanks to ParsCit's maintainer, Isaac Councill.</p>
     
 <p>FreeCite is implemented in <a href="http://www.rubyonrails.org/">Ruby on Rails</a> and
     </a>uses the <a href="http://crfpp.sourceforge.net/">CRF++ library</a> 
     implementation of conditional random fields. Our model is trained on the 
-    <a href="http://www.cs.umass.edu/~mccallum/data/cora-ie.tar.gz">CORA dataset</a>.
+    <a href="http://www.cs.umass.edu/~mccallum/data/cora-ie.tar.gz">CORA dataset</a>
+    with lexical augmentation from the <a href="http://research.brown.edu/research/search.php">Directory of Research and Researchers at Brown (DRR-B)</a>.
     </p>
     
 <h2>Other Citation Tools</h2>
@@ -34,7 +34,7 @@
     <li><a href="http://paracite.eprints.org/">ParaCite</a></li>
     <li><a href="http://aye.comp.nus.edu.sg/parsCit/">ParsCit</a></li>
     </ul>
-    <%= link_to "Let us know", :action => "feedback" %> of any other tools you'd like to see listed here.
+    <%= link_to "Please let us know", :action => "feedback" %> of any other tools you'd like to see listed here.
     </p>
     
 <h2>Feedback Welcomed!</h2>
