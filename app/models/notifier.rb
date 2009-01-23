@@ -7,12 +7,5 @@ class Notifier < ActionMailer::Base
     content_type "text/html"
     body :p => p
   end
-
-  def recipients(*addrs)
-    return super if addrs.empty?
-    mr = defined?(MAILER_RECIPIENTS) ? MAILER_RECIPIENTS : nil
-    super mr || addrs
-  end
-
 end
 

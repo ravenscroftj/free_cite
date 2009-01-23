@@ -82,7 +82,7 @@ module Postprocessor
       end
     end
     hsh['date'] = ret
-    return hsh
+    hsh
   end
 
   def normalize_volume(hsh)
@@ -95,7 +95,7 @@ module Postprocessor
     elsif hsh['volume'] =~ /(\d+)/
       hsh['volume'] = $1
     end
-    return hsh
+    hsh
   end
 
   ##

@@ -55,6 +55,7 @@ class CRFParser
     ret
   end
 
+=begin
   def eval_command(feat_seq)
     fout = Tempfile.new("crfout", "#{DIR}/../tmp")
     feat_seq.each {|l| fout.write "#{l.join(" ")}\n"}
@@ -74,14 +75,15 @@ class CRFParser
     fout.close true
     ret
   end
+=end
 
   def eval_crfpp(feat_seq)
     model.clear
-    num_lines = 0
+    #num_lines = 0
     feat_seq.each {|vec|
       line = vec.join(" ").strip
       raise unless model.add(line)
-      num_lines += 1
+      #num_lines += 1
     }
     raise unless model.parse
     tags = []

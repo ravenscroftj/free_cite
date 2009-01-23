@@ -60,7 +60,7 @@ class Citation < ActiveRecord::Base
     txt
   end
 
-  def to_xml(opt=nil)
+  def to_xml
     doc = REXML::Document.new
     ci = doc.add_element("citation")
     aus = ci.add_element("authors")
