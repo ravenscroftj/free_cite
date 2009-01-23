@@ -11,6 +11,7 @@ module Postprocessor
     if m.to_s =~ /^normalize/
       m.to_s =~ /normalize_(.*)$/
       normalize($1, args)
+    else super
     end
   end
 
