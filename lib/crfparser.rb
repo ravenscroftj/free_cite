@@ -39,7 +39,7 @@ class CRFParser
   end
 
   def model
-    @model || @model = CRFPP::Tagger.new("-m #{MODEL_FILE}");
+    @model ||= CRFPP::Tagger.new("-m #{MODEL_FILE}");
   end
 
   def parse_string(str)
