@@ -34,16 +34,16 @@ class CitationsController < ApplicationController
     end
     cstrs.reject! {|str| str.strip.empty?}
 
-    @citations = []
+     []
 
-    status = true
-    cstrs.each {|cstr|
+    okay = true
+    @citations = cstrs.map {|cstr|
       citation = Citation.create_from_string(cstr)
-      status &= citation.save
-      @citations << citation
+      okay = false unless citation.id
+      citation
     }
 
-    if status
+    if okay
       respond_to do |wants|
         wants.html {
           if @citations.empty?
