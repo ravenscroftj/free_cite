@@ -26,7 +26,6 @@
 
 require 'rexml/document'
 require 'crfparser'
-require 'string_helpers'
 require 'openurl'
 require 'postprocessor'
 require 'citation_to_context_object'
