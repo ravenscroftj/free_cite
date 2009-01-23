@@ -2,7 +2,7 @@ class Array
   def mean
     (size > 0) ? sum.to_f / size : 0
   end
-  
+
   def stddev
     m = mean
     devsum = inject( 0 ) { |ds,x| ds += (x - m)**2 }
@@ -15,7 +15,7 @@ class Array
 
   def pearson_r(other)
     unless size == other.size
-      raise "Vectors must be of same length to calculate pearson_r" 
+      raise "Vectors must be of same length to calculate pearson_r"
     end
     devp = stddev * other.stddev
     (devp > 0) ? cov(other) / devp : 0.0

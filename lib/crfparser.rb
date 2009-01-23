@@ -17,25 +17,25 @@ class CRFParser
   TRAINING_DATA = "#{DIR}/resources/trainingdata/training_data.txt"
   MODEL_FILE = "#{DIR}/resources/model"
   TEMPLATE_FILE = "#{DIR}/resources/parsCit.template"
-  
+
   # Feature functions must be performed in alphabetical order, since
   # later functions may depend on earlier ones.
   # If you want to specify a specific output order, do so in a yaml file in
   # config. See ../config/parscit_features.yml as an example
   # You may also use this config file to specify a subset of features to use
-  # Just be careful not to exclude any functions that included functions 
+  # Just be careful not to exclude any functions that included functions
   # depend on
   def initialize(config_file="#{DIR}/../config/parscit_features.yml")
     if config_file
       f = File.open(config_file, 'r')
       hsh = YAML::load( f )
-      @feature_order = hsh["feature_order"].map(&:to_sym) 
-      @token_features = hsh["feature_order"].sort.map(&:to_sym) 
+      @feature_order = hsh["feature_order"].map(&:to_sym)
+      @token_features = hsh["feature_order"].sort.map(&:to_sym)
     else
       @token_features = (TokenFeatures.instance_methods).sort.map(&:to_sym)
       @token_features.delete :clear
       @feature_order = @token_features
-    end  
+    end
   end
 
   def model
@@ -124,10 +124,10 @@ class CRFParser
     tokens_and_tags.each_with_index {|tok, i|
       # if this is training data, grab the mark-up tag and then skip it
       if training
-        if tok =~ /^<([a-z]+)>$/ 
+        if tok =~ /^<([a-z]+)>$/
           tag = $1
           next
-        elsif tok =~ /^<\/([a-z]+)>$/ 
+        elsif tok =~ /^<\/([a-z]+)>$/
           tok = nil
           raise TrainingError, "Mark-up tag mismatch #{tag} != #{$1}\n#{cstr}" if $1 != tag
           next
@@ -138,10 +138,10 @@ class CRFParser
 
       # If we are training, there should always be a tag defined
       if training && tok.nil?
-        raise TrainingError, "Incorrect mark-up:\n #{cstr}" 
-      end  
-      @token_features.each {|f| 
-        feats[f] = self.send(f, tokens, tokensnp, tokenslcnp, toki) 
+        raise TrainingError, "Incorrect mark-up:\n #{cstr}"
+      end
+      @token_features.each {|f|
+        feats[f] = self.send(f, tokens, tokensnp, tokenslcnp, toki)
       }
       toki += 1
 
@@ -152,7 +152,7 @@ class CRFParser
     return features
   end
 
-  def write_training_file(tagged_refs=TAGGED_REFERENCES, 
+  def write_training_file(tagged_refs=TAGGED_REFERENCES,
     training_data=TRAINING_DATA)
 
     fin = File.open(tagged_refs, 'r')
@@ -170,13 +170,13 @@ class CRFParser
     fout.close
   end
 
-  def train(tagged_refs=TAGGED_REFERENCES, model=MODEL_FILE, 
+  def train(tagged_refs=TAGGED_REFERENCES, model=MODEL_FILE,
     template=TEMPLATE_FILE, training_data=nil)
 
     if training_data.nil?
       training_data = TRAINING_DATA
       write_training_file(tagged_refs, training_data)
-    end  
+    end
     `crf_learn #{template} #{training_data} #{model}`
   end
 

@@ -65,13 +65,13 @@ class Citation < ActiveRecord::Base
     doc = REXML::Document.new
     ci = doc.add_element("citation")
     aus = ci.add_element("authors")
-    authors.each {|a| 
+    authors.each {|a|
       au = aus.add_element("author")
       au.text = a
     }
     ci.add_attribute("valid", valid_citation?.to_s)
 
-    %w(title journal booktitle editor volume publisher institution location 
+    %w(title journal booktitle editor volume publisher institution location
        number pages year tech note ).each {|heading|
 
       if value = self.attributes[heading]
@@ -82,8 +82,8 @@ class Citation < ActiveRecord::Base
 
     if !contexts.empty?
       ctxs = ci.add_element("contexts")
-      contexts.each {|ctx| 
-        c = ctxs.add_element("context") 
+      contexts.each {|ctx|
+        c = ctxs.add_element("context")
         c.text = ctx
       }
     end

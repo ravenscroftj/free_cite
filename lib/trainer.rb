@@ -17,7 +17,7 @@ class Trainer
     @featset.each { |id, feat_seq|
       next unless train_on_ids.include?(id)
       write_training_data(feat_seq)
-    } 
+    }
     return nil
   end
 
@@ -64,7 +64,7 @@ class Trainer
     out = learn
     out.display
   end
-  
+
   attr_reader :featset
 end
 
@@ -118,7 +118,7 @@ class TrainerCRF < Trainer
   def write_training_data(feat_seq)
     [false].each { |include_truth|
       feat_seq.each_feat_vec { |feat_vec, truth|
-        @f << feat_vec.join(" ") << " " 
+        @f << feat_vec.join(" ") << " "
         @f << truth << "\n"
       }
       @f << "\n"
@@ -138,7 +138,7 @@ class TrainerCRF < Trainer
     IO.popen("crf_learn #{Template_file} #{Train_file} #{Model_file}") { |io|
       puts io.gets while !io.eof
     }
-    
+
   end
 end
 
@@ -155,7 +155,7 @@ class FeatureSet
       debugger
       @feat_names = yaml[:feat_names]
       @hash = { }
-      yaml[:hash].each_pair{ |id, seq_hash| 
+      yaml[:hash].each_pair{ |id, seq_hash|
         @hash[id] = FeatureSequence.new(self, seq_hash)
       }
       @hash.each_pair { |id, feat_seq|
@@ -210,7 +210,7 @@ class FeatureSequence
       @feats = seq_hash[:feats]
     else
       @truth = []
-      @feats = Hash.new { |h, k| h[k] = [] } 
+      @feats = Hash.new { |h, k| h[k] = [] }
     end
     @tokens = []
   end
@@ -289,16 +289,16 @@ class FeatureSequence
     @tokens.each_with_index { |token, i|
       feat_hash = token_features(token)
       feat_hash.merge!(path_features(token.parent.my_path_str))
-      
+
       #feat_hash.merge!(:truth => truth)
       #puts "#{percent_overlap}:  #{token.content}"
       feat_hash.merge!(path_analyzer_features(path_analyzer, token))
-      feat_hash.each_pair { |fname, val| 
-        @feats[fname][i] = val 
+      feat_hash.each_pair { |fname, val|
+        @feats[fname][i] = val
         @featset.add_feat_name(fname)
       }
     }
-  end      
+  end
 
   def add_token(token, truth=nil)
     debugger unless token
@@ -328,11 +328,11 @@ class FeatureSequence
     feats[:path_length] = tags.length # depth
     ["table", "div", "p", "td", "tr"].each { |element_name|
       some = tags.select { |t| t =~ /#{element_name}\[/i }
-      len = some.length    
+      len = some.length
       feats["path_count_of_#{element_name}".to_sym] = len
-      feats["path_pos_first_of_#{element_name}".to_sym] = 
+      feats["path_pos_first_of_#{element_name}".to_sym] =
         len > 0 ? some.first.scan(/\[(\d+)\]/)[0][0] : "nil"
-      feats["path_pos_last_of_#{element_name}".to_sym] = 
+      feats["path_pos_last_of_#{element_name}".to_sym] =
         len > 0 ? some.last.scan(/\[(\d+)\]/)[0][0] : "nil"
     }
     feats
@@ -340,11 +340,11 @@ class FeatureSequence
 
   def clusterer_features(clusterer, token)
     feats = { }
-    #feats[:clusterer_match] = 
+    #feats[:clusterer_match] =
     #  clusterer.path_match?(token)
     #feats[:clusterer_group_rank] =
     #  clusterer.group_rank(token)
-    
+
     feats
   end
 end

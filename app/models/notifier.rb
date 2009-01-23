@@ -1,5 +1,5 @@
 class Notifier < ActionMailer::Base
-  
+
   def feedback(p)
     recipients "freecite.feedback@pubdisplay.com"
     from p[:email]

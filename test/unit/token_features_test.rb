@@ -9,10 +9,10 @@ class TokenFeaturesTest < Test::Unit::TestCase
 
   def setup
     @crfparser = CRFParser.new(false)
-    @ref = " W. H. Enright.   Improving the efficiency of matrix operations in the numerical solution of stiff ordinary differential equations.   ACM Trans. Math. Softw.,   4(2),   127-136,   June 1978. " 
-    @tokens_and_tags, @tokens, @tokensnp, @tokenslcnp = 
+    @ref = " W. H. Enright.   Improving the efficiency of matrix operations in the numerical solution of stiff ordinary differential equations.   ACM Trans. Math. Softw.,   4(2),   127-136,   June 1978. "
+    @tokens_and_tags, @tokens, @tokensnp, @tokenslcnp =
       @crfparser.prepare_token_data(@ref.strip)
-  end  
+  end
 
   def test_features
     @crfparser.token_features.each {|f|
@@ -216,7 +216,7 @@ class TokenFeaturesTest < Test::Unit::TestCase
   end
 
   def test_numbers
-    pairs = 
+    pairs =
       [[['12-34'], 'possiblePage'],
        [['19-99'], 'possiblePage'],
        [['19(99):'], 'possibleVol'],
@@ -262,8 +262,8 @@ class TokenFeaturesTest < Test::Unit::TestCase
   end
 
   def test_possible_chapter
-    
-    refs = ['Flajolet, P., Gourdon, X., and Panario, D.   Random polynomials and polynomial factorization.   In Automata, Languages, and Programming   (1996),   F. Meyer auf der Heide and B. Monien, Eds.,   vol. 1099,   of Lecture Notes in Computer Science,   Springer-Verlag,   pp. 232-243.   Proceedings of the 23rd ICALP Conference, Paderborn,   July 1996.', 
+
+    refs = ['Flajolet, P., Gourdon, X., and Panario, D.   Random polynomials and polynomial factorization.   In Automata, Languages, and Programming   (1996),   F. Meyer auf der Heide and B. Monien, Eds.,   vol. 1099,   of Lecture Notes in Computer Science,   Springer-Verlag,   pp. 232-243.   Proceedings of the 23rd ICALP Conference, Paderborn,   July 1996.',
     'JA Anderson (1977). Neural models with cognitive implications. In: D. LaBerge and S.J. Samuels (Eds .), Basic Processes in Reading: Perception and Comprehension . Hillsdale, New Jersey: Erlbaum Associates.',
     'Morgan, J.R. and Yarmush M.L. Gene Therapy in Tissue Engineering. In "Frontiers in Tissue Engineering", Patrick, Jr., CW, Mikos, AG, McIntire, LV, (eds.) Pergamon; Elsevier Science Publishers, Amsterdam, The Netherlands 1998; Chapter II.15 278- 310.',
     'Morgan, J.R. "Genetic Engineering of Skin Substitutes" In, Bioengineering of Skin Substitutes, International Business Communications, Inc., Southborough, MA 1998; Chapter 1.4., 61-73',
@@ -401,9 +401,9 @@ class TokenFeaturesTest < Test::Unit::TestCase
   def tok_test_numbers(f, toks, toksnp, tokslcnp, idx)
     a = nil
     assert_nothing_raised{a = @crfparser.send(f, toks, toksnp, tokslcnp, idx)}
-    b = ["year", "possiblePage", "possibleVol", "1dig", "2dig", "3dig", 
+    b = ["year", "possiblePage", "possibleVol", "1dig", "2dig", "3dig",
       "4+dig", "ordinal", "hasDig", "nonNum"].include?(a)
-    assert(b)  
+    assert(b)
   end
 
   def tok_test_lastName(f, toks, toksnp, tokslcnp, idx)
@@ -472,7 +472,7 @@ class TokenFeaturesTest < Test::Unit::TestCase
   def tok_test_punct(f, toks, toksnp, tokslcnp, idx)
     a = nil
     assert_nothing_raised{a = @crfparser.send(f, toks, toksnp, tokslcnp, idx)}
-    b = %w(leadQuote endQuote multiHyphen contPunct stopPunct 
+    b = %w(leadQuote endQuote multiHyphen contPunct stopPunct
       braces possibleVol others).include?(a)
     assert(b)
   end

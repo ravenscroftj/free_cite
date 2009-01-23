@@ -6,24 +6,24 @@ module Preprocessor
     :NAKEDNUM     => '\\d+',
     :NAKEDNUMDOT  => '\\d+\\.',
   }
-  
-  
+
+
   ##
   # Removes lines that appear to be junk from the citation text.
   ##
-  def normalizeCiteText(cite_text) 
+  def normalizeCiteText(cite_text)
     cite_text.split(/\n/).reject {|line|
       line =~ /^[\s\d]*$/
     }.join("\n")
   end  # normalizeCiteText
-  
+
   ##
   # Controls the process by which citations are segmented,
   # based on the result of trying to guess the type of
   # citation marker used in the reference section.  Returns
   # a reference to a list of citation objects.
   ##
-  def segmentCitations(cite_text) 
+  def segmentCitations(cite_text)
     marker_type = guess_marker_type(cite_text)
     unless marker_type == 'UNKNOWN'
       citations = split_unmarked_citations(cite_text)
@@ -73,8 +73,8 @@ module Preprocessor
     end
     citations
   end
-  
-  
-  
+
+
+
 end
 

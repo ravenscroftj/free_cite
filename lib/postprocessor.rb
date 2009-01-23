@@ -10,10 +10,10 @@ module Postprocessor
     # method defined
     if m.to_s =~ /^normalize/
       m.to_s =~ /normalize_(.*)$/
-      normalize($1, args) 
-    end  
+      normalize($1, args)
+    end
   end
-  
+
   # default normalization function for all fields that do not have their
   # own normalization
   # Strip any leading and/or trailing punctuation
@@ -43,7 +43,7 @@ module Postprocessor
         current_auth = []
         begin_auth = 1
         next
-      end  
+      end
       if begin_auth > 0
         current_auth << tok
         begin_auth = 0
@@ -56,7 +56,7 @@ module Postprocessor
           authors << auth
           current_auth = []
           begin_auth = 1
-        end  
+        end
       else
         current_auth << tok
       end
@@ -79,8 +79,8 @@ module Postprocessor
         hsh['year'] = ret
       else
         ret = nil
-      end  
-    end  
+      end
+    end
     hsh['date'] = ret
     return hsh
   end
@@ -103,7 +103,7 @@ module Postprocessor
   # field does not appear to be in a standard form, does nothing.
   ##
   def normalize_pages(hsh)
-    hsh['pages'] = 
+    hsh['pages'] =
       case hsh['pages']
         when  /(\d+)[^\d]+?(\d+)/
           "#{$1}--#{$2}"
@@ -111,7 +111,7 @@ module Postprocessor
           $1
         else
           hsh['pages']
-      end 
+      end
     hsh
   end
 
@@ -149,7 +149,7 @@ module Postprocessor
           tokens.last =~ /\,$/) or
           tok =~ /^[IVX][IVX]+\.?\,?$/
 
-        next  
+        next
       end
       tokens << tok
       break if last
@@ -174,13 +174,13 @@ module Postprocessor
     str = auth_toks.join(" ")
     if str =~ /(.+),\s*(.+)/
       str = "#{$1} #{$2}"
-    end  
+    end
     str.gsub!(/\.\-/, '-')
     str.gsub!(/[\,\.]/, ' ')
     str.gsub!(/  +/, ' ')
     str.strip!
 
-    if (str =~ /^[^\s][^\s]+(\s+[^\s]|\s+[^\s]\-[^\s])+$/) 
+    if (str =~ /^[^\s][^\s]+(\s+[^\s]|\s+[^\s]\-[^\s])+$/)
       new_toks = str.split(/\s+/)
       new_order = new_toks[1...new_toks.length];
       new_order << new_toks[0]

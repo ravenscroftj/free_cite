@@ -2,9 +2,9 @@
 # when writing the template file
 feature_order:
  - 'last_char'        # 1
- - 'first_1_char'     # 2 
+ - 'first_1_char'     # 2
  - 'first_2_chars'    # 3
- - 'first_3_chars'    # 4 
+ - 'first_3_chars'    # 4
  - 'first_4_chars'    # 5
  - 'last_1_char'      # 6
  - 'last_2_chars'     # 7

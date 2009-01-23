@@ -15,7 +15,7 @@ DATA_PREFIX = "training_data_"
 TAG = "model_test"
 
 class ModelTest
-  
+
   def initialize
     @crf = CRFParser.new
   end
@@ -46,7 +46,7 @@ class ModelTest
     f = File.open(TRAINING_REFS, 'r')
     while line = f.gets
       refs << line.strip
-    end  
+    end
     # strip out tags
     refs.map! {|s| s.gsub(/<[^>]*>/, '')}
     # parse one string, since the lexicon is lazily evaluated
@@ -66,14 +66,14 @@ class ModelTest
 
     if commit and tag_name.strip.blank?
       raise "You must supply a tag name if you want to commit and tag this test"
-    end  
+    end
 
     if commit
       str = "git add #{ANALYSIS_FILE} #{OUTPUT_FILE}"
       puts "Adding test files to index \n#{str}"
       `#{str}`
 
-      str = "git commit --message '#{commit_message}' #{ANALYSIS_FILE} #{OUTPUT_FILE}" 
+      str = "git commit --message '#{commit_message}' #{ANALYSIS_FILE} #{OUTPUT_FILE}"
       puts "Committing files to source control \n#{str}"
       `#{str}`
 
@@ -84,7 +84,7 @@ class ModelTest
   end
 
   def cleanup
-    to_remove = [TRAINING_DATA, TESTING_DATA, TRAINING_REFS, TESTING_REFS, 
+    to_remove = [TRAINING_DATA, TESTING_DATA, TRAINING_REFS, TESTING_REFS,
       MODEL_FILE]
     `rm -f #{to_remove.join(" ")} #{DIR}/#{DATA_PREFIX}*txt #{DIR}/#{REFS_PREFIX}*txt`
   end
@@ -121,26 +121,26 @@ class ModelTest
     end
     f.close
 
-    lines.each_with_index {|ll, i| 
-      f = File.open("#{DIR}/#{REFS_PREFIX}#{i}.txt", 'w') 
+    lines.each_with_index {|ll, i|
+      f = File.open("#{DIR}/#{REFS_PREFIX}#{i}.txt", 'w')
       f.write(ll.join("\n"))
       f.flush
       f.close
-      @crf.write_training_file("#{DIR}/#{REFS_PREFIX}#{i}.txt", 
+      @crf.write_training_file("#{DIR}/#{REFS_PREFIX}#{i}.txt",
                                "#{DIR}/#{DATA_PREFIX}#{i}.txt")
     }
   end
-  
+
   def train
     @crf.train(TRAINING_REFS, MODEL_FILE, TEMPLATE_FILE, TRAINING_DATA)
   end
-  
+
   def test
     str = "crf_test -m #{MODEL_FILE} #{TESTING_DATA} >> #{OUTPUT_FILE}"
     puts str
     `#{str}`
   end
-  
+
   def analyze(k)
     # get the size of the corpus
     corpus_size = `wc #{TAGGED_REFERENCES}`.split.first
@@ -164,7 +164,7 @@ class ModelTest
     testf = File.open(OUTPUT_FILE, 'r')
     ref = new_hash(labels)
     while testl = testf.gets
-      if testl.strip.blank? 
+      if testl.strip.blank?
         references << ref
         ref = new_hash(labels)
         next
@@ -176,7 +176,7 @@ class ModelTest
       ref[tr][te] += 1
     end
     testf.close
-  
+
     # print results to a file
     f = File.open(ANALYSIS_FILE, 'w')
     f.write "Results for model\n branch: #{branch}\n version: #{version}\n"
@@ -192,7 +192,7 @@ class ModelTest
           total[trl][tel] = references.map {|r| r[trl][tel]}.sum
       }
     }
-   
+
     # print a confusion matrix
     f.write 'truth\test,'
     f.write labels.join(',')
@@ -230,15 +230,15 @@ class ModelTest
     }
     f.write "\nAverage accuracy by reference:,#{avgs.mean}\n"
     f.write "STD of Average accuracy by reference:,#{avgs.stddev}\n"
-  
+
     # number of perfectly parsed references
     f.write "Perfect parses:,#{perfect},#{perfect.to_f/references.length}\n"
-  
+
     # Total accuracy
     n = labels.map {|lab| total[lab][lab]}.sum
     d = labels.map {|lab1| labels.map {|lab2| total[lab1][lab2]}.sum }.sum
     f.write "Accuracy:, #{n/d.to_f}\n"
- 
+
     f.flush
     f.close
 
@@ -253,7 +253,7 @@ class ModelTest
       labels.each {|lab2|
         h[lab1][lab2] = 0
       }
-    }  
+    }
     h
   end
 end

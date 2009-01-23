@@ -55,9 +55,9 @@ class CitationsController < ApplicationController
             redirect_to :action => 'show', :citations => @citations
           end
          }
-         wants.js 
-         wants.xml { 
-           render :xml => 
+         wants.js
+         wants.xml {
+           render :xml =>
              "<citations>\n" << citations2xml(@citations) << "</citations>\n",
            :status => :ok
          }

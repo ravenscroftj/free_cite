@@ -13,19 +13,19 @@ module TokenFeatures
           mode = 1
         when /^\#\# Female/
           mode = 2
-        when /^\#\# Last/  
+        when /^\#\# Last/
           mode = 4
-        when /^\#\# Chinese/  
+        when /^\#\# Chinese/
           mode = 4
-        when /^\#\# Months/  
+        when /^\#\# Months/
           mode = 8
-        when /^\#\# Place/  
+        when /^\#\# Place/
           mode = 16
-        when /^\#\# Publisher/  
+        when /^\#\# Publisher/
           mode = 32
-        when (/^\#/) 
+        when (/^\#/)
           # noop
-        else 
+        else
           key = l
           val = 0
           # entry has a probability
@@ -33,9 +33,9 @@ module TokenFeatures
 
           # some words in dict appear in multiple places
           unless dict[key] and dict[key] >= mode
-            dict[key] ||= 0 
+            dict[key] ||= 0
             dict[key] += mode
-          end  
+          end
       end
     end
     f.close
@@ -44,7 +44,7 @@ module TokenFeatures
 
   DIR = File.dirname(__FILE__)
   DICT = TokenFeatures.read_dict_file("#{DIR}/resources/parsCitDict.txt")
-  DICT_FLAGS = 
+  DICT_FLAGS =
     {'publisherName' =>  32,
      'placeName'     =>  16,
      'monthName'     =>  8,
@@ -117,8 +117,8 @@ module TokenFeatures
     if @possible_editor
       @possible_editor
     else
-      @possible_editor = 
-        (tokslcnp.any? { |t|  %w(ed editor editors eds edited).include?(t)} ? 
+      @possible_editor =
+        (tokslcnp.any? { |t|  %w(ed editor editors eds edited).include?(t)} ?
           "possibleEditors" : "noEditors")
     end
   end
@@ -129,7 +129,7 @@ module TokenFeatures
     if @possible_chapter
       @possible_chapter
     else
-      @possible_chapter = 
+      @possible_chapter =
         ((possible_editor(toks, toksnp, tokslcnp, idx) and
         (toks.join(" ") =~ /[\.,;]\s*in[:\s]/i)) ?
           "possibleChapter" : "noChapter")
@@ -140,16 +140,16 @@ module TokenFeatures
     if @is_proceeding
       @is_proceeding
     else
-      @is_proceeding = 
-        (tokslcnp.any? {|t| 
+      @is_proceeding =
+        (tokslcnp.any? {|t|
           %w( proc proceeding proceedings ).include?(t.strip)
         } ? 'isProc' : 'noProc')
     end
   end
 
   def is_in(toks, toksnp, tokslcnp, idx)
-    ((idx > 0) and 
-     (idx < (toks.length - 1)) and 
+    ((idx > 0) and
+     (idx < (toks.length - 1)) and
      (toksnp[idx+1] =~ /^[A-Z]/) and
      (tokslcnp[idx] == 'in') and
      (toks[idx-1] =~ /[#{SEPARATORS}#{QUOTES}]/))? "inBook" : "notInBook"
@@ -161,7 +161,7 @@ module TokenFeatures
     return a if a
 
     if idx < toks.length - 1
-      a = ((tokslcnp[idx] == 'et') and (tokslcnp[idx+1] == 'al')) 
+      a = ((tokslcnp[idx] == 'et') and (tokslcnp[idx+1] == 'al'))
     end
 
     return (a ? "isEtAl" : "noEtAl")
@@ -169,7 +169,7 @@ module TokenFeatures
 
   def location(toks, toksnp, tokslcnp, idx)
     r = ((idx.to_f / toks.length) * 10).round
-  end  
+  end
 
   def punct(toks, toksnp, tokslcnp, idx)
     (toks[idx]   =~ /^[\"\'\`]/)                    ? "leadQuote"   :
@@ -184,7 +184,7 @@ module TokenFeatures
   def a_is_in_dict(toks, toksnp, tokslcnp, idx)
     ret = {}
     @dict_status = (DICT[tokslcnp[idx]] ? DICT[tokslcnp[idx]] : 0)
-  end  
+  end
 
   def publisherName(toks, toksnp, tokslcnp, idx)
     (@dict_status & DICT_FLAGS['publisherName']) > 0 ? 'publisherName' : 'noPublisherName'
@@ -200,15 +200,15 @@ module TokenFeatures
 
   def lastName(toks, toksnp, tokslcnp, idx)
     (@dict_status & DICT_FLAGS['lastName']) > 0 ? 'lastName' : 'noLastName'
-  end 
+  end
 
   def femaleName(toks, toksnp, tokslcnp, idx)
     (@dict_status & DICT_FLAGS['femaleName']) > 0 ? 'femaleName' : 'noFemaleName'
-  end 
+  end
 
   def maleName(toks, toksnp, tokslcnp, idx)
     (@dict_status & DICT_FLAGS['maleName']) > 0 ? 'maleName' : 'noMaleName'
-  end 
+  end
 
 end
 

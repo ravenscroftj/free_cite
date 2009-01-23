@@ -5,7 +5,7 @@ module CitationToContextObject
   def CitationToContextObject.load_journal_abbrs
     f = File.open("#{DIR}/resources/journal_abbreviations.yml", 'r')
     YAML::load(f).map(&:strip).join("|")
-  end  
+  end
 
   def CitationToContextObject.load_country_codes
     f = File.open("#{DIR}/resources/country_codes.yml", 'r')
@@ -17,7 +17,7 @@ module CitationToContextObject
   DIR = File.dirname(__FILE__)
   JOURNAL_ABBRS = load_journal_abbrs
   COUNTRY_CODES = load_country_codes
-  
+
   private_class_method :load_journal_abbrs
   private_class_method :load_country_codes
 
@@ -30,7 +30,7 @@ module CitationToContextObject
   def CitationToContextObject.to_context_obj(citation)
     ctx = nil
     # if the citation has a booktitle, parse it into a book
-    if citation.booktitle 
+    if citation.booktitle
       ctx = to_book(citation)
     # elsif the citation has a journal title, parse it into a journal
     elsif citation.journal
@@ -44,14 +44,14 @@ module CitationToContextObject
       # or a patent...
       elsif citation.tech =~ /patent/i
         ctx = to_patent(citation)
-      end  
-    end  
+      end
+    end
     unless ctx
-      # can't figure out what kind of referent we have, so just make a blank 
+      # can't figure out what kind of referent we have, so just make a blank
       # ContextObject
       ctx = OpenURL::ContextObject.new
-      ctx.referent.set_format 'unknown' 
-    end  
+      ctx.referent.set_format 'unknown'
+    end
     ctx
   end
 
@@ -60,11 +60,11 @@ module CitationToContextObject
   def CitationToContextObject.to_patent(citation)
     ctx = OpenURL::ContextObject.new
     ctx.referent.set_format 'patent'
-    set_metadata(ctx, 'inventor', citation.authors) 
-    set_metadata(ctx, 'title', citation.title) 
-    set_metadata(ctx, 'assignee', citation.institution) 
-    set_metadata(ctx, 'pubdate', citation.year.to_s) 
-    
+    set_metadata(ctx, 'inventor', citation.authors)
+    set_metadata(ctx, 'title', citation.title)
+    set_metadata(ctx, 'assignee', citation.institution)
+    set_metadata(ctx, 'pubdate', citation.year.to_s)
+
     # try to get a patent number
     # e.g. "1 234 56" or "1-23-423" or "1.231.32" or "123324"
     citation.tech =~ /((\d[ -\.]*)+)/
@@ -73,7 +73,7 @@ module CitationToContextObject
     # try to get a country code
     citation.tech.split(/[^A-Za-z]+/).each {|tok|
       if COUNTRY_CODES[tok]
-        set_metadata(ctx, 'cc', tok) 
+        set_metadata(ctx, 'cc', tok)
         break
       end
     }
@@ -90,14 +90,14 @@ module CitationToContextObject
     au = citation.authors.join(" ")
     set_metadata(ctx, 'au', citation.authors.join(" ")) unless au.strip.empty?
 
-    set_metadata(ctx, 'title', citation.title) 
-    set_metadata(ctx, 'inst', citation.institution) 
-    set_metadata(ctx, 'date', citation.year.to_s) 
-    set_metadata(ctx, 'co', citation.location) 
+    set_metadata(ctx, 'title', citation.title)
+    set_metadata(ctx, 'inst', citation.institution)
+    set_metadata(ctx, 'date', citation.year.to_s)
+    set_metadata(ctx, 'co', citation.location)
 
     # try to guess the degree
     citation.tech =~ /(p\.?h\.?d)/i
-    set_metadata(ctx, 'degree', $1) 
+    set_metadata(ctx, 'degree', $1)
 
     return ctx
   end
@@ -107,36 +107,36 @@ module CitationToContextObject
   def CitationToContextObject.to_journal(citation)
     ctx = OpenURL::ContextObject.new
     ctx.referent.set_format 'journal'
-    set_metadata(ctx, 'atitle', citation.title) 
+    set_metadata(ctx, 'atitle', citation.title)
 
     # try to guess if this journal title is full or short
     # look for common journal abbreviations
     if " #{citation.journal} " =~ /[^A-Za-z]#{JOURNAL_ABBRS}[^A-Za-z]/i
       set_metadata(ctx, 'stitle', citation.journal)
-    else 
-      set_metadata(ctx, 'jtitle', citation.journal) 
-    end  
-    set_metadata(ctx, 'au', citation.authors) 
-    set_metadata(ctx, 'corp', citation.institution) 
-    set_metadata(ctx, 'date', citation.year.to_s) 
-    set_metadata(ctx, 'quarter', citation.number) 
-    set_metadata(ctx, 'volume', citation.volume) 
-    
+    else
+      set_metadata(ctx, 'jtitle', citation.journal)
+    end
+    set_metadata(ctx, 'au', citation.authors)
+    set_metadata(ctx, 'corp', citation.institution)
+    set_metadata(ctx, 'date', citation.year.to_s)
+    set_metadata(ctx, 'quarter', citation.number)
+    set_metadata(ctx, 'volume', citation.volume)
+
     # Try to break pages field into a start and end page
     if citation.pages =~ /^\D*(\d+)--(\d+)\D*$/
-      set_metadata(ctx, 'spage', $1) 
+      set_metadata(ctx, 'spage', $1)
       set_metadata(ctx, 'epage', $2)
     else
-      set_metadata(ctx, 'pages', citation.pages) 
+      set_metadata(ctx, 'pages', citation.pages)
     end
 
     if citation.tech =~ /pre[ -]?print/i
       set_metadata(ctx, 'genre', 'preprint')
     elsif citation.title || citation.pages
       set_metadata(ctx, 'genre', 'article')
-    elsif citation.number || citation.volume 
+    elsif citation.number || citation.volume
       set_metadata(ctx, 'genre', 'issue')
-    elsif citation.booktitle =~ /(proceeding|conference|proc[\. ])/i 
+    elsif citation.booktitle =~ /(proceeding|conference|proc[\. ])/i
       if citation.title || citation.pages
         set_metadata(ctx, 'genre', 'proceeding')
       else
@@ -153,8 +153,8 @@ module CitationToContextObject
   def CitationToContextObject.to_book(citation)
     ctx = OpenURL::ContextObject.new
     ctx.referent.set_format 'book'
-    set_metadata(ctx, 'au', citation.authors) 
-    set_metadata(ctx, 'btitle', citation.booktitle) 
+    set_metadata(ctx, 'au', citation.authors)
+    set_metadata(ctx, 'btitle', citation.booktitle)
 
     # Try to break pages field into a start and end page
     if citation.pages =~ /^\D*(\d+)--(\d+)\D*$/
@@ -164,13 +164,13 @@ module CitationToContextObject
       set_metadata(ctx, 'pages', citation.pages)
     end
 
-    set_metadata(ctx, 'atitle', citation.title) 
-    set_metadata(ctx, 'pub', citation.publisher) 
-    set_metadata(ctx, 'date', citation.year.to_s) 
-    set_metadata(ctx, 'place', citation.location) 
-    set_metadata(ctx, 'corp', citation.institution) 
+    set_metadata(ctx, 'atitle', citation.title)
+    set_metadata(ctx, 'pub', citation.publisher)
+    set_metadata(ctx, 'date', citation.year.to_s)
+    set_metadata(ctx, 'place', citation.location)
+    set_metadata(ctx, 'corp', citation.institution)
 
-    if citation.booktitle =~ /(proceeding|conference|proc[\. ])/i 
+    if citation.booktitle =~ /(proceeding|conference|proc[\. ])/i
       if citation.title || citation.pages
         set_metadata(ctx, 'genre', 'proceeding')
       else
