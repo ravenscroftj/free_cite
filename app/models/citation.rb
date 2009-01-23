@@ -98,19 +98,14 @@ class Citation < ActiveRecord::Base
     doc
   end
 
-  def self.create_from_hash(hsh)
-    hsh.keys.reject {|k| Citation.column_names.include?(k)}.each {|k|
-      hsh.delete k
-    }
-    Citation.create(hsh)
-  rescue Exception => e
-    raise "Could not create citation from string: #{str}\nFailed with error: #{e}\n#{e.backtrace.join("\n")}"
-  end
-
   def self.create_from_string(str)
     cp = CRFParser.new
     hsh = cp.parse_string(str)
-    Citation.create_from_hash(hsh)
+
+    hsh.keys.reject {|k| Citation.column_names.include?(k)}.each {|k|
+      hsh.delete k
+    }
+    self.create(hsh)
   end
 
 end
