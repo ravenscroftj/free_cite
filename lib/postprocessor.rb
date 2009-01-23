@@ -104,15 +104,21 @@ module Postprocessor
   # field does not appear to be in a standard form, does nothing.
   ##
   def normalize_pages(hsh)
-    hsh['pages'] =
-      case hsh['pages']
-        when  /(\d+)[^\d]+?(\d+)/
-          "#{$1}--#{$2}"
-        when  /(\d+)/
-          $1
-        else
-          hsh['pages']
-      end
+    # "vol.issue (year):pp"
+    case hsh['pages']
+    when /(\d+) (?: \.(\d+))? (?: \( (\d\d\d\d) \))? : (\d.*)/x
+      hsh['volume'] = $1
+      hsh['number'] = $2 if $2
+      hsh['year'] = $3 if $3
+      hsh['pages'] = $4
+    end
+
+    case hsh['pages']
+    when  /(\d+)[^\d]+(\d+)/
+      hsh['pages'] = "#{$1}--#{$2}"
+    when  /(\d+)/
+      hsh['pages'] = $1
+    end
     hsh
   end
 
