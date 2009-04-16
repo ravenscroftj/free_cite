@@ -48,6 +48,9 @@ a:hover {
 
 #header .university {
   height:45px;
+
+  /* IE6 is clearing floats */
+  _margin-bottom:-30px;
 }
 
 #header .university a.name {
@@ -89,11 +92,17 @@ a:hover {
 #content {
   width:600px;
   float:right;
+
+  /* because IE6 is weird */
+  _padding-top:0.5em;
 }
 
 #sidebar {
   width:200px;
   float:left;
+
+  /* ditto */
+  _width:190px;
 }
 
 #sidebar ul,
@@ -156,5 +165,9 @@ form label {
 
 #feedback .email input,
 #feedback .description textarea {
+  width:100%;
+}
+
+#content textarea {
   width:100%;
 }
