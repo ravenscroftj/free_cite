@@ -10,7 +10,7 @@ class CitationsController < ApplicationController
   end
 
   def index
-    render :action => 'parse_string'
+    render :nothing => true
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -47,7 +47,7 @@ class CitationsController < ApplicationController
       respond_to do |wants|
         wants.html {
           if @citations.empty?
-            redirect_to :action => 'parse_string'
+            render :text => "Couldn't parse any citations", :status => :bad_request
           else
             redirect_to :action => 'show', :citations => @citations
           end
