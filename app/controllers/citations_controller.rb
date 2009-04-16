@@ -49,7 +49,7 @@ class CitationsController < ApplicationController
           if @citations.empty?
             render :text => "Couldn't parse any citations", :status => :bad_request
           else
-            redirect_to :action => 'show', :citations => @citations
+            render :action => 'show', :citations => @citations
           end
          }
          wants.json {
