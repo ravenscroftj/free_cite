@@ -1,7 +1,7 @@
-role :app, "huey.privatedisplay.net"
+role :app, "huey"
 set :application, "FreeCite"
-set :repository,  "git@github.com:miriam/free_cite.git"
-set :branch, "huey_deploy"
+set :repository, "git://github.com/shoe/free_cite.git"
+set :branch, "master"
 set :user, "www"
 
 set :deploy_to, "/www/freecite"
