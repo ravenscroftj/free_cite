@@ -100,7 +100,9 @@ class Citation < ActiveRecord::Base
 
   def self.create_from_string(str)
     cp = CRFParser.new
-    hsh = cp.parse_string(str)
+    ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
+    valid_string = ic.iconv(str << ' ')[0..-2]
+    hsh = cp.parse_string(valid_string)
 
     hsh.keys.reject {|k| Citation.column_names.include?(k)}.each {|k|
       hsh.delete k
