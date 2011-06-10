@@ -5,6 +5,7 @@
 #
 #  id          :integer       not null, primary key
 #  raw_string  :text
+#  raw_string_hash :string(255)
 #  authors     :text          default(--- [])
 #  title       :text
 #  year        :integer
@@ -99,6 +100,8 @@ class Citation < ActiveRecord::Base
   end
 
   def self.create_from_string(str)
+    (uri,s) = str.split("||",2)
+    str =  s if s
     cp = CRFParser.new
     ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
     valid_string = ic.iconv(str << ' ')[0..-2]
@@ -107,7 +110,15 @@ class Citation < ActiveRecord::Base
     hsh.keys.reject {|k| Citation.column_names.include?(k)}.each {|k|
       hsh.delete k
     }
-    self.create(hsh)
+    cit = nil
+    if s
+      hsh["uri"] = uri 
+      if cit = self.first(:conditions=>{"uri"=>hsh["uri"]})
+        cit.update_attributes!(hsh)
+      end
+    end
+    cit = self.create(hsh) unless cit
+    cit
   end
 
 end
