@@ -10,7 +10,28 @@ class CitationsController < ApplicationController
   end
 
   def index
-    render :nothing => true
+    if params[:uri]
+      @citations = Citation.find(:all, :conditions=>{:uri=>params[:uri]})
+      respond_to do |wants|
+        wants.html {
+          if @citations.empty?
+            render :text => "Couldn't parse any citations", :status => :bad_request
+          else
+            render :action => 'show', :citations => @citations
+          end
+         }
+         wants.json {
+           render :json => @citations.to_json
+         }
+         wants.xml {
+           render :xml =>
+             "<citations>\n" << citations2xml(@citations) << "</citations>\n",
+           :status => :ok
+         }
+      end      
+    else
+      render :nothing => true
+    end
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -18,7 +39,9 @@ class CitationsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
+
     redirect_to :action => "show"
+    
   end
 
   def create

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080807202338) do
+ActiveRecord::Schema.define(:version => 20110610111110) do
 
   create_table "citations", :force => true do |t|
     t.text    "raw_string"
@@ -31,7 +31,10 @@ ActiveRecord::Schema.define(:version => 20080807202338) do
     t.string  "marker_type"
     t.string  "marker"
     t.string  "rating"
+    t.string  "uri"
   end
+
+  add_index "citations", ["uri"], :name => "index_citations_on_uri"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
