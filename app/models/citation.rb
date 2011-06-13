@@ -30,6 +30,7 @@ require 'crfparser'
 require 'openurl'
 require 'postprocessor'
 require 'citation_to_context_object'
+require 'utf8_parser'
 
 class Citation < ActiveRecord::Base
 
@@ -104,7 +105,13 @@ class Citation < ActiveRecord::Base
     str =  s if s
     cp = CRFParser.new
     ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
+    # The strings we get might contain escaped UTF-8 directly from the original n-triples.
+    begin
+      utf8 = UTF8Parser.new(str)
+      str = utf8.parse_string
+    rescue;end
     valid_string = ic.iconv(str << ' ')[0..-2]
+    valid_string = cp.normalize_citations(valid_string)
     hsh = cp.parse_string(valid_string)
 
     hsh.keys.reject {|k| Citation.column_names.include?(k)}.each {|k|

@@ -1,5 +1,6 @@
-module Preprocessor
 
+module Preprocessor
+  attr_accessor :cleanup_rules
   MARKER_TYPES = {
     :SQUARE       => '\\[.+?\\]',
     :PAREN        => '\\(.+?\\)',
@@ -7,7 +8,16 @@ module Preprocessor
     :NAKEDNUMDOT  => '\\d+\\.',
   }
 
-
+  CLEANUP_RULES = YAML.load_file "#{RAILS_ROOT}/config/citation_cleanup_rules.yml"
+  
+  # def self.included(mod)
+  #   # Turn our 
+  #   mod.cleanup_rules ||= {}
+  #   CLEANUP_RULES['rules'].each_pair do |key,values|
+  #     mod.cleanup_rules[key] = {}
+  #     values.each_pair do |k,v|
+  #   end
+  # end
   ##
   # Removes lines that appear to be junk from the citation text.
   ##
@@ -17,6 +27,17 @@ module Preprocessor
     }.join("\n")
   end  # normalizeCiteText
 
+  def normalize_citations(cite_text)
+    citations = []
+    cite_text.split(/\n/).each do |cite|
+      CLEANUP_RULES['order'].each do |rule_name|
+        re = Regexp.new(CLEANUP_RULES['rules'][rule_name]['regex'], CLEANUP_RULES['rules'][rule_name]['ignore_case'])
+        cite.gsub!(re, CLEANUP_RULES['rules'][rule_name]['replacement_str']||'')
+      end      
+      citations << cite
+    end
+    citations.join("\n")
+  end
   ##
   # Controls the process by which citations are segmented,
   # based on the result of trying to guess the type of
@@ -32,7 +53,7 @@ module Preprocessor
     end
     return citations
   end  # segmentCitations
-
+  
   ##
   # Segments citations that have explicit markers in the
   # reference section.  Whenever a new line starts with an

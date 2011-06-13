@@ -1,4 +1,5 @@
 require 'postprocessor'
+require 'preprocessor'
 require 'token_features'
 require 'CRFPP'
 require 'tempfile'
@@ -10,6 +11,7 @@ class CRFParser
   attr_reader :token_features
 
   include TokenFeatures
+  include Preprocessor
   include Postprocessor
 
   DIR = File.dirname(__FILE__)
