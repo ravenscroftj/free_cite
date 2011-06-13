@@ -13,7 +13,7 @@ ActiveRecord::Schema.define(:version => 20110610111110) do
 
   create_table "citations", :force => true do |t|
     t.text    "raw_string"
-    t.text    "authors",     :default => "--- []"
+    t.text    "authors",         :default => "--- []"
     t.text    "title"
     t.integer "year"
     t.text    "publisher"
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(:version => 20110610111110) do
     t.text    "pages"
     t.text    "volume"
     t.text    "number"
-    t.text    "contexts",    :default => "--- []"
+    t.text    "contexts",        :default => "--- []"
     t.text    "tech"
     t.text    "institution"
     t.text    "editor"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(:version => 20110610111110) do
     t.string  "marker"
     t.string  "rating"
     t.string  "uri"
+    t.text    "original_string"
   end
 
   add_index "citations", ["uri"], :name => "index_citations_on_uri"

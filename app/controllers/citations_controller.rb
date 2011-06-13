@@ -1,5 +1,5 @@
 require 'citation'
-
+require 'json'
 class CitationsController < ApplicationController
 
   def set_rating
@@ -94,7 +94,6 @@ class CitationsController < ApplicationController
     if params[:citations]
       @citations = params[:citations].map {|c| Citation.find c.to_i}
     else
-      puts params[:id]
       @citations = [Citation.find((params[:id]||:first), :order=>[:id])]
     end
   end

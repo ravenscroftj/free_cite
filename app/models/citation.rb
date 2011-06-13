@@ -5,7 +5,8 @@
 #
 #  id          :integer       not null, primary key
 #  raw_string  :text
-#  raw_string_hash :string(255)
+#  original_string :text
+#  uri         :string(255)
 #  authors     :text          default(--- [])
 #  title       :text
 #  year        :integer
@@ -103,6 +104,7 @@ class Citation < ActiveRecord::Base
   def self.create_from_string(str)
     (uri,s) = str.split("||",2)
     str =  s if s
+    orig_str = str.dup
     cp = CRFParser.new
     ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
     # The strings we get might contain escaped UTF-8 directly from the original n-triples.
@@ -124,6 +126,7 @@ class Citation < ActiveRecord::Base
         cit.update_attributes!(hsh)
       end
     end
+    hsh["original_string"] = orig_str
     cit = self.create(hsh) unless cit
     cit
   end

@@ -3,43 +3,56 @@
 <table>
 <% @citations.each {|c| %>
   <tr>
+
+	  <td bgcolor="FF9999" class='choose_option'>
+	    <input id="unusable"
+	      name="citation_rating_<%=c.id-%>"
+	      type="radio"
+	      value="unusable"
+	      onclick="new Ajax.Request('/citations/set_rating/<%=c.id-%>', {parameters:{rating: this.value} }); return true;"
+	      <%= c.rating == 'unusable' ? "checked" : "" -%> />
+	    <label for='unusable'>unusable</label>
+	  </td>
+
+	  <td bgcolor="FFFFCC" class='choose_option'>
+	    <input id="usable"
+	      name="citation_rating_<%=c.id-%>"
+	      type="radio"
+	      value="usable"
+	      onclick="new Ajax.Request('/citations/set_rating/<%=c.id-%>', {parameters:{rating: this.value} }); return true;"
+	      <%= c.rating == 'usable' ? "checked" : "" -%> />
+	    <label for='usable'>good enough</label>
+	  </td>
+
+	  <td bgcolor="CCFFCC" class='choose_option'>
+	    <input id="perfect"
+	      name="citation_rating_<%=c.id-%>"
+	      type="radio"
+	      value="perfect"
+	    onclick="new Ajax.Request('/citations/set_rating/<%=c.id-%>', {parameters:{rating: this.value} }); return true;"
+	      <%= c.rating == 'perfect' ? "checked" : "" -%> />
+	    <label for='perfect'>perfect</label>
+	  </td>	
   <td>
   <%= c.to_spans %>
   <br>
   <code> <%= html_escape(c.context_object.xml) %> </code>
   </td>
 
-  <td bgcolor="FF9999" class='choose_option'>
-    <input id="unusable"
-      name="citation_rating_<%=c.id-%>"
-      type="radio"
-      value="unusable"
-      onclick="new Ajax.Request('/citations/set_rating/<%=c.id-%>', {parameters:{rating: this.value} }); return true;"
-      <%= c.rating == 'unusable' ? "checked" : "" -%> />
-    <label for='unusable'>unusable</label>
-  </td>
-
-  <td bgcolor="FFFFCC" class='choose_option'>
-    <input id="usable"
-      name="citation_rating_<%=c.id-%>"
-      type="radio"
-      value="usable"
-      onclick="new Ajax.Request('/citations/set_rating/<%=c.id-%>', {parameters:{rating: this.value} }); return true;"
-      <%= c.rating == 'usable' ? "checked" : "" -%> />
-    <label for='usable'>good enough</label>
-  </td>
-
-  <td bgcolor="CCFFCC" class='choose_option'>
-    <input id="perfect"
-      name="citation_rating_<%=c.id-%>"
-      type="radio"
-      value="perfect"
-    onclick="new Ajax.Request('/citations/set_rating/<%=c.id-%>', {parameters:{rating: this.value} }); return true;"
-      <%= c.rating == 'perfect' ? "checked" : "" -%> />
-    <label for='perfect'>perfect</label>
-  </td>
 
   </tr>
+
+
+
+	<% JSON.parse(c.to_json).each_pair do |key, vals| %>
+	<tr>
+		<td colspan="3" align="right"><%= key -%>:</td>		
+		<td><%= [*vals].join("<br />") %></td>		
+
+	</tr>
+	<% end %>
+
+	</td>
 <% } %>
 </table>
 
@@ -64,4 +77,14 @@ Key:
 <br>
 <code>ContextObject</code>
 <br>
+
 <%= link_to "Home",{:controller => 'welcome', :action => 'index'} %>
+<% 
+	prev_next = previous_and_next_ids(@citations.first.id)
+	if prev_next[:prev]%>
+	<p>Previous: <%= link_to prev_next[:prev].raw_string, {:id=>prev_next[:prev].id }%></p>
+	<% end 
+	if prev_next[:next]%>
+	<p>Next: <%= link_to prev_next[:next].raw_string, {:id=>prev_next[:next].id }%></p>
+<% end %>
+
