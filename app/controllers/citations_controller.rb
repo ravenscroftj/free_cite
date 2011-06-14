@@ -1,5 +1,5 @@
 require 'citation'
-require 'json'
+
 class CitationsController < ApplicationController
 
   def set_rating
