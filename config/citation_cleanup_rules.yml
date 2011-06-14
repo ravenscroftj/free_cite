@@ -6,6 +6,8 @@
 
 
 order:
+    - strip_quotes_0
+    - unescape_quotes_0
     - vol_0
     - vol_1
     - year_0
@@ -49,4 +51,12 @@ rules:
         # Description: Many citations lead with the database they were found in: 'JSTOR', 'EBSCO', etc.  These need to be removed
         regex: ^(JSTOR|Blackwell Synergy)\W*
         ignore_case: true
+    strip_quotes_0:
+        # Remove leading and trailing quotes from citation string
+        regex: ^\s*\"(.*)\"\s*$
+        replacement_str: \1
+    unescape_quotes_0:
+        # Remove leading and trailing quotes from citation string
+        regex: \\"
+        replacement_str: "       
     
