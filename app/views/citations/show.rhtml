@@ -44,7 +44,7 @@
 
 
 
-	<% JSON.parse(c.to_json).each_pair do |key, vals| %>
+	<% c.attributes.each_pair do |key, vals| %>
 	<tr>
 		<td colspan="3" align="right"><%= key -%>:</td>		
 		<td><%= [*vals].join("<br />") %></td>		
