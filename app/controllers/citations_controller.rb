@@ -95,6 +95,23 @@ class CitationsController < ApplicationController
       @citations = params[:citations].map {|c| Citation.find c.to_i}
     else
       @citations = [Citation.find((params[:id]||:first), :order=>[:id])]
+      respond_to do |wants|
+        wants.html {
+          if @citations.empty?
+            render :text => "Couldn't parse any citations", :status => :bad_request
+          else
+            render :action => 'show', :citations => @citations
+          end
+         }
+         wants.json {
+           render :json => @citations.to_json
+         }
+         wants.xml {
+           render :xml =>
+             "<citations>\n" << citations2xml(@citations) << "</citations>\n",
+           :status => :ok
+         }
+      end      
     end
   end
 
