@@ -26,7 +26,11 @@ rules:
     vol_1:
         # Description: replace 'Vol' with 'vol.'
         regex: \sVol\W
-        replacement_str: ' vol. \1'
+        replacement_str: ' vol. '
+    vol_2:
+        # Description: replace 'Volume' with 'vol.' (lowercased 'volume' seems fine)
+        regex: \sVolume\W
+        replacement_str: ' vol. '
     year_0:
         # Description: Years generally appear in the form (YYYY), remove any variants ((YYYY/YY), etc.)
         regex: \s\(([0-9]{4})\/?[0-9]*\)\.?\s
@@ -46,6 +50,10 @@ rules:
     eresource_0:
         # Description: remove the junk about it being an electronic copy
         regex: \s?\[electronic (journal|resource|version)\]
+        ignore_case: true
+    eresource_1:
+        # Description: variant cruft about it being an electronic copy
+        regex: \s?\[online\]
         ignore_case: true
     leading_source_0:
         # Description: Many citations lead with the database they were found in: 'JSTOR', 'EBSCO', etc.  These need to be removed
