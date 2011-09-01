@@ -159,17 +159,18 @@ class CRFParser
   def write_training_file(tagged_refs=TAGGED_REFERENCES,
     training_data=TRAINING_DATA)
 
-    fin = File.open(tagged_refs, 'r')
+    #fin = File.open(tagged_refs, 'r')
     fout = File.open(training_data, 'w')
     x = 0
-    while l = fin.gets
+    #while l = fin.gets
+    TaggedReference.all.each do |l|
       puts "processed a line #{x+=1}"
-      data = str_2_features(l.strip, true)
+      data = str_2_features(l.tagged_string.strip, true)
       data.each {|line| fout.write("#{line.join(" ")}\n") }
       fout.write("\n")
     end
 
-    fin.close
+    #fin.close
     fout.flush
     fout.close
   end
