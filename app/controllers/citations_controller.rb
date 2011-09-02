@@ -89,6 +89,33 @@ class CitationsController < ApplicationController
              :status => :internal_server_error
     end
   end
+  
+  def update
+    unless params[:id]
+      render :text => "No id supplied!", :status => :bad_request
+    end
+    citation = Citation.find(params[:id])
+    ignore_keys = [:id, :original_string, :tagged_string]
+    params.each_pair do |key, value|
+      next if ignore_keys.include?(key)
+      unless key == :authors || key == :contexts || key == "authors" || key == "contexts"
+        citation[key] = value
+      else
+        if value.nil? or value.empty?
+          val = []
+        else
+          val = value.split(/\s*,\s*/)
+        end
+        citation[key] = val
+      end
+    end
+    citation.rating = "perfect"
+    citation.save
+    if params[:tagged_string]
+      TaggedReference.create(:tagged_string=>params[:tagged_string], :complete=>(params[:tagged_string_valid]||true))
+    end
+    render :json => {:status=>"OK"}.to_json
+  end
 
   def show
     if params[:citations]

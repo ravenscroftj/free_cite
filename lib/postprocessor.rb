@@ -29,7 +29,7 @@ module Postprocessor
   # and then normalizes these names individually.  Returns a
   # list of author names.
   ##
-  def normalize_author(hsh)
+  def normalize_author(hsh)    
     str = hsh['author']
     tokens = repair_and_tokenize_author_text(str)
     authors = []
@@ -66,7 +66,7 @@ module Postprocessor
       auth = normalize_author_name(current_auth)
       authors << auth unless auth.strip == "-"
     end
-    hsh['authors'] = authors
+    hsh['authors'] = authors    
     hsh
   end
 
@@ -136,11 +136,18 @@ module Postprocessor
     author_text.gsub!(/\[.*?$/, '')
     author_text.gsub!(/;/, ',')
     author_text.gsub!(/,/, ', ')
-    author_text.gsub!(/\:/, ' ')
-    author_text.gsub!(/[\:\"\<\>\/\?\{\}\[\]\+\=\(\)\*\^\%\$\#\@\!\~\_]/, '')
+    
+    # Commenting these out -- there are too many examples of CRF++ shoving 
+    # other fields into the authors field and by stripping all punctuation
+    # it's impossible to turn a corrected string back into TaggedReference
+    
+    #author_text.gsub!(/\:/, ' ')
+    #author_text.gsub!(/[\:\"\<\>\/\?\{\}\[\]\+\=\(\)\*\^\%\$\#\@\!\~\_]/, '')
+    
     author_text = join_multi_word_names(author_text)
 
-    orig_tokens = author_text.split(/\s+/)
+    orig_tokens = author_text.split(/\s+/)    
+    
     tokens = []
     last = false
     orig_tokens.each_with_index {|tok, i|
@@ -160,7 +167,7 @@ module Postprocessor
       end
       tokens << tok
       break if last
-    }
+      }
     tokens
   end # repair_and_tokenize_author_text
 
@@ -183,7 +190,8 @@ module Postprocessor
       str = "#{$1} #{$2}"
     end
     str.gsub!(/\.\-/, '-')
-    str.gsub!(/[\,\.]/, ' ')
+    #str.gsub!(/[\,\.]/, ' ')
+    str.gsub!(/[\,]/, ' ')
     str.gsub!(/  +/, ' ')
     str.strip!
 

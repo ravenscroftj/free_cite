@@ -163,7 +163,7 @@ class CRFParser
     fout = File.open(training_data, 'w')
     x = 0
     #while l = fin.gets
-    TaggedReference.all.each do |l|
+    TaggedReference.find(:all,:conditions=>{:complete=>true}).each do |l|
       puts "processed a line #{x+=1}"
       data = str_2_features(l.tagged_string.strip, true)
       data.each {|line| fout.write("#{line.join(" ")}\n") }
