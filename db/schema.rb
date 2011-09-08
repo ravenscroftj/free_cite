@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110902175231) do
+ActiveRecord::Schema.define(:version => 20110906195604) do
 
   create_table "citations", :force => true do |t|
     t.text    "raw_string"
@@ -57,5 +57,12 @@ ActiveRecord::Schema.define(:version => 20110902175231) do
   end
 
   add_index "tagged_references", ["complete"], :name => "index_tagged_references_on_complete"
+
+  create_table "users", :force => true do |t|
+    t.string   "username"
+    t.string   "password"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

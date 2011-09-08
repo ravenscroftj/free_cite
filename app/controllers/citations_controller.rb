@@ -1,6 +1,8 @@
 require 'citation'
 
 class CitationsController < ApplicationController
+  
+  before_filter :digest_authenticate, :except => [:index, :list, :show]
 
   def set_rating
     c = Citation.find(params[:id])
@@ -151,5 +153,11 @@ class CitationsController < ApplicationController
   def citations2xml(citations)
     citations.map{|c| "#{c.to_xml}\n#{c.context_object.xml}"}.join("\n")
   end
+  def digest_authenticate
+    success = authenticate_or_request_with_http_digest("Freecite") do |username|
+      @user = User.find_by_username(username).try(:password)
+    end
+
+  end  
 end
 
