@@ -59,8 +59,6 @@ class CitationsController < ApplicationController
     end
     cstrs.reject! {|str| str.strip.empty?}
 
-     []
-
     okay = true
     @citations = cstrs.map {|cstr|
       citation = Citation.create_from_string(cstr)
