@@ -95,26 +95,27 @@ class CitationsController < ApplicationController
       render :text => "No id supplied!", :status => :bad_request
     end
     citation = Citation.find(params[:id])
-    ignore_keys = [:id, :original_string, :tagged_string]
+    ignore_keys = [:id, :original_string, :tagged_string, :contexts]
+    normalized_cite = {}
     params.each_pair do |key, value|
-      next if ignore_keys.include?(key)
-      unless key == :authors || key == :contexts || key == "authors" || key == "contexts"
-        citation[key] = value
+      next if ignore_keys.include?(key.to_sym)
+      unless key.to_sym == :authors
+        normalized_cite[key] = value
       else
-        if value.nil? or value.empty?
-          val = []
-        else
-          val = value.split(/\s*,\s*/)
-        end
-        citation[key] = val
+        normalized_cite["author"] = value
       end
+    end
+      
+    parser = CRFParser.new
+    parser.normalize_fields(normalized_cite).each_pair do |key,value|
+      citation[key] = value
     end
     citation.rating = "perfect"
     citation.save
     if params[:tagged_string]
       TaggedReference.create(:tagged_string=>params[:tagged_string], :complete=>(params[:tagged_string_valid]||true))
     end
-    render :json => {:status=>"OK"}.to_json
+    render :json => citation.to_json
   end
 
   def show
