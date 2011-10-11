@@ -111,10 +111,14 @@ class CitationsController < ApplicationController
       citation[key] = value
     end
     citation.rating = "perfect"
-    citation.save
-    if params[:tagged_string]
-      TaggedReference.create(:tagged_string=>params[:tagged_string], :complete=>(params[:tagged_string_valid]||true))
-    end
+    citation.save if citation.changed?
+    tagged_ref = TaggedReference.find_or_create_by_citation_id(citation.id)
+    tagged_ref.tagged_string = tag_string(citation.attributes)
+    tagged_ref.complete = tagged_string_complete?(tagged_ref.tagged_string, citation.attributes)
+    tagged_ref.save if tagged_ref.changed?
+    # if params[:tagged_string]
+    #   TaggedReference.create(:tagged_string=>params[:tagged_string], :complete=>(params[:tagged_string_valid]||true))
+    # end
     render :json => citation.to_json
   end
 
@@ -151,6 +155,41 @@ class CitationsController < ApplicationController
   end
   def citations2xml(citations)
     citations.map{|c| "#{c.to_xml}\n#{c.context_object.xml}"}.join("\n")
+  end
+  def tag_string(hsh)
+    str = hsh["original_string"].dup.chomp
+    ignored_keys = ["id", "rating", "uri", "original_string", "raw_string", "marker", "marker_type", "md5_hash", "action", "controller", "author"]
+    hsh.each_pair do |k,v|
+      next if ignored_keys.include?(k) || v.nil? || (v.respond_to?(:empty?) && v.empty?)
+      if k == "authors"
+        puts "(#{Regexp.escape(start_string)} .* #{Regexp.escape(end_string)})"
+        unless str.sub!(/(#{Regexp.escape(start_string)}\s.*#{Regexp.escape(end_string)})/, ' <author> \1 </author> ')
+          str.sub!(/(#{Regexp.escape(end_string)}\s.*#{Regexp.escape(start_string)})/, ' <author> \1 </author> ')
+        end
+      elsif k == "pages"
+        if v =~ /\-\-/
+          (s,e) = v.split("--")
+          str.sub!(/(#{s}\s*\-{1,2}\s*#{e})/, ' <' + k + '> \1 </' + k + '> ')
+        end        
+      elsif v.to_s =~ /^\d*$/
+        str.sub!(/((^|\D)#{v}(\D|$))/, ' <' + k + '> \1 </' + k + '> ')
+      else
+        str.sub!(/(#{Regexp.escape(v)})/, ' <' + k + '> \1 </' + k + '> ')
+      end      
+    end
+    str
+  end
+  
+  def tagged_string_complete?(str, cite)
+    ignored_keys = ["id", "rating", "uri", "original_string", "raw_string", "marker", "marker_type", "md5_hash", "action", "controller", "author"]
+    cite.each_key do |key|
+      next if ignored_keys.include?(key) or (cite[key].nil? or (cite[key].respond_to?(:empty?) and cite[key].empty?))
+      key = "author" if key == "authors"
+      unless str.match(/\<#{key}\>/) && str.match(/\<\/#{key}\>/) 
+        return false 
+      end
+    end
+    true
   end
   def digest_authenticate
     success = authenticate_or_request_with_http_digest("Freecite") do |username|

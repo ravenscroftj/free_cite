@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110906195604) do
+ActiveRecord::Schema.define(:version => 20110921174528) do
 
   create_table "citations", :force => true do |t|
     t.text    "raw_string"
@@ -35,8 +35,10 @@ ActiveRecord::Schema.define(:version => 20110906195604) do
     t.text    "original_string"
     t.text    "edition"
     t.text    "identifier"
+    t.string  "md5_hash"
   end
 
+  add_index "citations", ["md5_hash"], :name => "index_citations_on_md5_hash"
   add_index "citations", ["uri"], :name => "index_citations_on_uri"
 
   create_table "sessions", :force => true do |t|
@@ -54,8 +56,10 @@ ActiveRecord::Schema.define(:version => 20110906195604) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "complete",      :default => true
+    t.integer  "citation_id"
   end
 
+  add_index "tagged_references", ["citation_id"], :name => "index_tagged_references_on_citation_id"
   add_index "tagged_references", ["complete"], :name => "index_tagged_references_on_complete"
 
   create_table "users", :force => true do |t|

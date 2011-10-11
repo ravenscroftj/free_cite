@@ -122,12 +122,14 @@ class Citation < ActiveRecord::Base
     cit = nil
     if s
       hsh["uri"] = uri 
-      if cit = self.first(:conditions=>{"uri"=>hsh["uri"]})
-        cit.update_attributes!(hsh)
-      end
+      cit = self.find_or_create_by_uri(hsh["uri"])
+      cit.update_attributes!(hsh)
+    else
+      hsh["original_string"] = orig_str
+      hsh["md5_hash"] = MD5.md5(orig_str).to_s
+      cit = self.find_or_create_by_md5_hash(hsh["md5_hash"])
+      cit.update_attributes!(hsh)
     end
-    hsh["original_string"] = orig_str
-    cit = self.create(hsh) unless cit
     cit
   end
 
