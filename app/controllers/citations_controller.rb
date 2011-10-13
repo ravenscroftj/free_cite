@@ -116,7 +116,7 @@ class CitationsController < ApplicationController
     tagged_ref.tagged_string = tag_string(citation.attributes)
     tagged_ref.complete = tagged_string_complete?(tagged_ref.tagged_string, citation.attributes)
     tagged_ref.save if tagged_ref.changed?
-
+    
     render :json => citation.to_json
   end
 
