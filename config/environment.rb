@@ -45,7 +45,7 @@ end
 
 # add helpers
 require 'array_helpers'
-require 'md5'
+require 'digest/md5'
 # Add new inflection rules using the following format 
 # (all these examples are active by default):
 # Inflector.inflections do |inflect|
