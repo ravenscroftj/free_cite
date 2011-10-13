@@ -112,13 +112,11 @@ class CitationsController < ApplicationController
     end
     citation.rating = "perfect"
     citation.save if citation.changed?
-    tagged_ref = TaggedReference.find_or_create_by_citation_id(citation.id)
+    tagged_ref = TaggedReference.find_or_create_by_md5_hash(citation.md5_hash)
     tagged_ref.tagged_string = tag_string(citation.attributes)
     tagged_ref.complete = tagged_string_complete?(tagged_ref.tagged_string, citation.attributes)
     tagged_ref.save if tagged_ref.changed?
-    # if params[:tagged_string]
-    #   TaggedReference.create(:tagged_string=>params[:tagged_string], :complete=>(params[:tagged_string_valid]||true))
-    # end
+
     render :json => citation.to_json
   end
 
@@ -162,7 +160,8 @@ class CitationsController < ApplicationController
     hsh.each_pair do |k,v|
       next if ignored_keys.include?(k) || v.nil? || (v.respond_to?(:empty?) && v.empty?)
       if k == "authors"
-        puts "(#{Regexp.escape(start_string)} .* #{Regexp.escape(end_string)})"
+        start_string = v.first.split(/\s/).first
+        end_string = v.last.split(/\s/).last
         unless str.sub!(/(#{Regexp.escape(start_string)}\s.*#{Regexp.escape(end_string)})/, ' <author> \1 </author> ')
           str.sub!(/(#{Regexp.escape(end_string)}\s.*#{Regexp.escape(start_string)})/, ' <author> \1 </author> ')
         end

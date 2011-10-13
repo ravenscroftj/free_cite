@@ -2,7 +2,7 @@ class CreateCitations < ActiveRecord::Migration
   def self.up
     create_table :citations do |t|
       t.column :raw_string,  :text
-      t.column :authors,     :text,     :default => "--- []"
+      t.column :authors,     :text #,     :default => "--- []"
     	t.column :title,       :text
     	t.column :year,        :integer
     	t.column :publisher,   :text
@@ -12,7 +12,7 @@ class CreateCitations < ActiveRecord::Migration
     	t.column :pages,       :text
     	t.column :volume,      :text
     	t.column :number,      :text
-    	t.column :contexts,    :text,     :default => "--- []"
+    	t.column :contexts,    :text #,     :default => "--- []"
     	t.column :tech,        :text
     	t.column :institution, :text
     	t.column :editor,      :text

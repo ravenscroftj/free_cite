@@ -37,6 +37,11 @@ class Citation < ActiveRecord::Base
 
   serialize :authors, Array
   serialize :contexts, Array
+  
+  def after_initialize
+    self.authors  ||= [] 
+    self.contexts ||= []
+  end  
 
   def rating=(r)
     self[:rating] = r
