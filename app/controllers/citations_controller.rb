@@ -124,7 +124,7 @@ class CitationsController < ApplicationController
     if params[:citations]
       @citations = params[:citations].map {|c| Citation.find c.to_i}
     else
-      @citations = [Citation.find((params[:id]||:first), :order=>[:id])]
+      @citations = [Citation.find((params[:id]||:first), :order=>:id)]
       respond_to do |wants|
         wants.html {
           if @citations.empty?
