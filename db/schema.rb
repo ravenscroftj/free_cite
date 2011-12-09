@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111013174126) do
+ActiveRecord::Schema.define(:version => 20111209214830) do
 
   create_table "citations", :force => true do |t|
     t.text    "raw_string"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(:version => 20111013174126) do
     t.text    "edition"
     t.text    "identifier"
     t.string  "md5_hash"
+    t.text    "article_number"
   end
 
   add_index "citations", ["md5_hash"], :name => "index_citations_on_md5_hash"
