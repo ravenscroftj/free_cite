@@ -168,12 +168,12 @@ class CitationsController < ApplicationController
       elsif k == "pages"
         if v =~ /\-\-/
           (s,e) = v.split("--")
-          str.sub!(/(#{s}\s*\-{1,2}\s*#{e})/, ' <' + k + '> \1 </' + k + '> ')
+          str.sub!(/(?![^<]*\s<\/)(#{s}\s*\-{1,2}\s*#{e})/, ' <' + k + '> \1 </' + k + '> ')
         end        
       elsif v.to_s =~ /^\d*$/
-        str.sub!(/((^|\D)#{v}(\D|$))/, ' <' + k + '> \1 </' + k + '> ')
+        str.sub!(/(?![^<]*\s<\/)(^|\D)(#{v})(\D|$)/, '\1 <' + k + '> \2 </' + k + '> \3')
       else
-        str.sub!(/(#{Regexp.escape(v)})/, ' <' + k + '> \1 </' + k + '> ')
+        str.sub!(/(?![^<]*\s<\/)(#{Regexp.escape(v)})/, ' <' + k + '> \1 </' + k + '> ')
       end      
     end
     str
