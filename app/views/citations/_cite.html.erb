@@ -1,0 +1,25 @@
+<div id="cite_<%= cite['id'] -%>" class="parsedString">
+	<span id="authors_<%= cite['id'] -%>" class="authors editField"><%= (cite['authors']||[]).join(", ") -%></span>
+	(<span id="year_<%= cite['id'] -%>" class="year editField"><%= cite["year"]||"&nbsp;&nbsp;&nbsp;&nbsp;" -%></span>)
+ 	<% if cite["title"] %>&quot;<%end%>
+	<span id="title_<%= cite['id'] -%>" class="title editField"><%=  cite['title'] -%></span>
+	<% if cite["title"]	%>&quot;,&nbsp;<%end%>
+	<span id="journal_<%= cite['id'] -%>" class="journal editField"><%= cite['journal'] -%></span>
+	<% if cite["journal"] %>. <%end%>
+	<% if cite['booktitle'] && !cite['booktitle'].empty? && cite['title'] %>in <%end%>
+	<span id="booktitle_<%= cite['id'] -%>" class="booktitle editField"><%=  cite['booktitle'] -%></span>
+	<span id="edition_<%= cite['id'] -%>" class="edition editField"><%= cite['edition'] -%></span>
+	<% if cite['booktitle'] %>. <%end%>
+	<span id="editor_<%= cite['id'] -%>" class="editor editField"><%=  cite['editor'] -%></span>
+	<% if cite['volume'] %>Vol. <%end%>
+	<span id="volume_<%= cite['id'] -%>" class="volume editField"><%= cite['volume'] -%></span>
+	<% if cite['number'] %>No. <%end%>
+	<span id="number_<%= cite['id'] -%>" class="number editField"><%= cite['number'] -%></span>
+	<span id="pages_<%= cite['id'] -%>" class="pages editField"><%= cite['pages'] -%></span>
+	<span id="article_number_<%= cite['id'] -%>" class="article_number editField"><%= cite['article_number'] -%></span>
+	<span id="location_<%= cite['id'] -%>" class="location editField"><%= cite['location'] -%></span>
+	<% if cite['publisher'] %>: <%end%>
+	<span id="publisher_<%= cite['id'] -%>" class="publisher editField"><%= cite['publisher'] -%></span>
+	<span id="identifier_<%= cite['id'] -%>" class="identifier editField"%><%=  cite['identifier'] -%></span>
+	<span id="note_<%= cite['id'] -%>" class="note editField"%><%=  cite['note'] -%></span>	
+</div>

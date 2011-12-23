@@ -130,13 +130,14 @@ class Citation < ActiveRecord::Base
       cit = self.find_or_create_by_uri(hsh["uri"])
       cit.update_attributes!(hsh)
     else
-      hsh["original_string"] = orig_str
-      hsh["md5_hash"] = Digest::MD5.hexdigest(orig_str).to_s
-      cit = self.find_or_create_by_md5_hash(hsh["md5_hash"])
+      hsh["original_string"] = orig_str.strip
+      hsh["md5_hash"] = Digest::MD5.hexdigest(hsh["original_string"]).to_s
+      unless cit = self.find_by_md5_hash(hsh['md5_hash'])
+        cit = self.create(hsh)
       # If we have a "marked up" string, assume the user has already gone through the effort of fixing 
       # a bad or incomplete parsing job
-      if !TaggedReference.find_by_md5_hash(hsh["md5_hash"]) || (cit.original_string.nil? || cit.original_string.empty? || cit.raw_string.nil? || cit.raw_string.empty?)
-        cit.update_attributes!(hsh)
+      # if !TaggedReference.find_by_md5_hash(hsh["md5_hash"]) || (cit.original_string.nil? || cit.original_string.empty? || cit.raw_string.nil? || cit.raw_string.empty?)
+      #   cit.update_attributes!(hsh)
       end
     end
     cit

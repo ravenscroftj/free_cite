@@ -1,0 +1,71 @@
+<% ignore_keys = ["rating", "uri", "marker_type", "marker", "id", "contexts"] %>
+
+<% @citations.each do |cite|%>
+	<div class="cite">
+		<div class="original_string">
+			<strong> Original citation string:</strong>
+			<blockquote id="original_<%= cite['id'] -%>" class="original"> <%= cite["original_string"] -%> </blockquote>
+		</div>
+		
+		<div class="reconciler" id="citation_<%= cite['id'] -%>">
+			<div class="citationEditor">
+				<strong> Parsed citation string:</strong>
+				<div class="editMenu">
+					<select id="textAction_<%= cite['id'] -%>">
+						<option>replace</option>
+						<option>append</option>
+						<option>prepend</option>
+						<option>remove</option>
+					</select>
+					<% [:title, :authors, :editor, :journal, :booktitle, :edition, :year, :volume, :number, :pages, :article_number, :location, :publisher, :identifier, :note].each do |button| %>
+						<input type="button" value=<%= button.to_s.capitalize.gsub("_", " ") -%> onClick="updateField('<%= button -%>', <%= cite['id'] -%>)" />
+					<%end%>
+				</div>
+				<%= render :partial=>"cite", :locals=>{:cite=>cite} %>
+				<div class="key">
+					<span class="authors">Authors</span>
+					||
+					<span class="year">Year</span>
+					||
+					<span class="title">Title</span>
+					||
+					<span class="booktitle">Book Title</span>
+					||
+					<span class="Edition">Edition</span>
+					||
+					<span class="editor">Editor(s)</span>
+					||
+					<span class="journal">Journal Title</span>
+					||
+					<span class="volume">Volume</span>
+					||
+					<span class="number">Issue</span>
+					||
+					<span class="pages">Pages</span>
+					||
+					<span class="article_number">Article Number</span>
+					||
+					<span class="location">Location</span>
+					||
+					<span class="identifier" title="ISBN, DOI, PMID, etc.">Identifier</span>
+					||
+					<span class="note">Note</span>
+				</div>
+			</div>	
+		</div>		
+			<div class="formsContainer">
+				<div class="updateButtonContainer" id="updateContainer_<%= cite['id'] -%>">
+					<form id="updateForm_<%= cite['id'] -%>">
+						<input type="submit" class="updateButton" value="Update" id="upate_<%= cite['id'] -%>" />
+					</form>
+				</div>
+				<div class="editButtonContainer" id="editContainer_<%= cite['id'] -%>">
+					<form id="editForm_<%= cite['id'] -%>">
+						<input type="hidden" value="<%= cite['id'] -%>" />
+						<input type="subject" value="Edit" class="editButton" id="edit_<%= cite['id'] -%>" />
+					</form>
+				</div>					
+			</div>
+		</div>
+	</div>
+<%end%>					

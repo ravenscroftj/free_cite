@@ -125,6 +125,7 @@ class CRFParser
     tokens_and_tags, tokens, tokensnp, tokenslcnp = prepare_token_data(cstr, training)
     toki = 0
     tag = nil
+    nil_tag = false
     tokens_and_tags.each_with_index {|tok, i|
       # if this is training data, grab the mark-up tag and then skip it
       if training
@@ -152,6 +153,17 @@ class CRFParser
       features << [tok]
       @feature_order.each {|f| features.last << feats[f]}
       features.last << tag if training
+      if tag.nil?
+        nil_tag = true
+      elsif nil_tag
+        features.each {|f| 
+          if f.last.nil?
+            f.pop
+            f << tag
+          end
+        }
+        nil_tag =false
+      end
     }
     return features
   end
@@ -166,7 +178,7 @@ class CRFParser
     TaggedReference.find(:all,:conditions=>{:complete=>true}).each do |l|
       puts "processed a line #{x+=1}"
       data = str_2_features(l.tagged_string.strip, true)
-      data.each {|line| fout.write("#{line.join(" ")}\n") }
+      data.each {|line| puts line.inspect if line.length < 25; fout.write("#{line.join(" ")}\n") }
       fout.write("\n")
     end
 

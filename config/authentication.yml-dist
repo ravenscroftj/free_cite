@@ -1,0 +1,9 @@
+development:
+    access: none # basic, digest, none
+    realm: freecite
+testing:
+    access: none # basic, digest, none
+    realm: freecite    
+production:
+    access: none # basic, digest, none
+    realm: freecite

@@ -1,0 +1,13 @@
+<html>
+	<head>
+		<title>View/Edit Citations</title>
+		<%= stylesheet_link_tag "editor" %>
+		<%= javascript_include_tag "http://code.jquery.com/jquery-1.6.4.min.js", "http://www.appelsiini.net/download/jquery.jeditable.mini.js", "citation_editor", "jquery.textselect" %>
+	</head>
+	
+	<body onload="enableEditor();">
+		<div class="container">
+			<%= @content_for_layout %>			
+		</div>
+	</body>
+</html>

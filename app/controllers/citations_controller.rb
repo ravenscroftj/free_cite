@@ -2,7 +2,7 @@ require 'citation'
 
 class CitationsController < ApplicationController
   
-  before_filter :digest_authenticate, :except => [:index, :list, :show]
+  before_filter :do_authentication, :except => [:index, :list, :show]
 
   def set_rating
     c = Citation.find(params[:id])
@@ -72,7 +72,8 @@ class CitationsController < ApplicationController
           if @citations.empty?
             render :text => "Couldn't parse any citations", :status => :bad_request
           else
-            render :action => 'show', :citations => @citations
+            #render :action => 'show', :citations => @citations
+            render :edit, :citations => @citations, :layout=> 'citation_editor'
           end
          }
          wants.json {
@@ -95,10 +96,22 @@ class CitationsController < ApplicationController
       render :text => "No id supplied!", :status => :bad_request
     end
     citation = Citation.find(params[:id])
-    ignore_keys = [:id, :original_string, :tagged_string, :contexts]
+    ignore_keys = [:id, :original_string, :tagged_string, :contexts, :raw_string, :uri, :rating]
     normalized_cite = {}
+    nils = []
     params.each_pair do |key, value|
       next if ignore_keys.include?(key.to_sym)
+      next unless value
+      if value
+        value.strip!
+        value.sub!(/^[,\.;:\-\\\/\s]*/, "")
+        value.sub!(/[,\.;:\-\\\/\s]*$/, "") 
+        value.sub!(/\s\s*/, " ")    
+        if value.empty?
+          nils << key
+          next
+        end    
+      end
       unless key.to_sym == :authors
         normalized_cite[key] = value
       else
@@ -110,14 +123,21 @@ class CitationsController < ApplicationController
     parser.normalize_fields(normalized_cite).each_pair do |key,value|
       citation[key] = value
     end
+    nils.each do |key|
+      citation[key] = nil
+    end
+      
     citation.rating = "perfect"
     citation.save if citation.changed?
     tagged_ref = TaggedReference.find_or_create_by_md5_hash(citation.md5_hash)
     tagged_ref.tagged_string = tag_string(citation.attributes)
     tagged_ref.complete = tagged_string_complete?(tagged_ref.tagged_string, citation.attributes)
     tagged_ref.save if tagged_ref.changed?
-    
-    render :json => citation.to_json
+    if request.xhr?
+      render :partial=>"cite", :locals=>{:cite => citation}, :layout=>nil
+    else
+      render :json => citation.to_json
+    end
   end
 
   def show
@@ -130,7 +150,7 @@ class CitationsController < ApplicationController
           if @citations.empty?
             render :text => "Couldn't parse any citations", :status => :bad_request
           else
-            render :action => 'show', :citations => @citations
+            render :edit, :citations => @citations, :layout=> 'citation_editor'
           end
          }
          wants.json {
@@ -190,11 +210,28 @@ class CitationsController < ApplicationController
     end
     true
   end
-  def digest_authenticate
+  
+  def do_authentication
+    case AUTHENTICATION_CONFIG['access']
+    when "digest" then authenticate_digest
+    when "basic" then authenticate_basic
+    end
+  end
+  
+  def authenticate_basic
+    begin
+      authenticate_or_request_with_http_basic do |user_name, password|
+        @user = User.find_by_username(username).try(:password)
+      end
+    rescue
+      "HTTP Basic: Access denied"
+    end  
+  end
+  
+  def authenticate_basic
     success = authenticate_or_request_with_http_digest("Freecite") do |username|
       @user = User.find_by_username(username).try(:password)
     end
-
   end  
 end
 

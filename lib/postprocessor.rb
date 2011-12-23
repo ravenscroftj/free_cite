@@ -19,8 +19,10 @@ module Postprocessor
   # own normalization
   # Strip any leading and/or trailing punctuation
   def normalize(key, hsh)
-    hsh[key].gsub!(/^[^A-Za-z0-9]+/, '')
-    hsh[key].gsub!(/[^A-Za-z0-9]+$/, '')
+    if hsh[key].respond_to?(:"gsub!")
+      hsh[key].gsub!(/^[^A-Za-z0-9]+/, '')
+      hsh[key].gsub!(/[^A-Za-z0-9]+$/, '')
+    end
     hsh
   end
 
