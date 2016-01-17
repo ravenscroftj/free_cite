@@ -66,5 +66,5 @@ rules:
     unescape_quotes_0:
         # Remove leading and trailing quotes from citation string
         regex: \\"
-        replacement_str: "       
+        replacement_str: "\""       
     
